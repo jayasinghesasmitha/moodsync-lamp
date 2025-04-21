@@ -182,7 +182,7 @@ def analyze_facial_movement(duration=10):
         
         # Save sample frame every second (assuming ~30fps)
         if frame_count % 30 == 0:
-            cv2.imwrite(f"analysis_frames/frame_{frame_count}.jpg", frame)
+            cv2.imwrite(f"Code section/analysis_frames/frame_{frame_count}.jpg", frame)
         
         # Check for 'q' key press to exit early
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -351,7 +351,7 @@ if __name__ == "__main__":
         display_results(analysis_results)
         
         # Save results to a text file
-        with open("analysis_results.txt", "w") as f:
+        with open("Code section/analysis_results.txt", "w") as f:
             f.write("Facial Movement Analysis Results\n")
             f.write("="*40 + "\n")
             for key, value in analysis_results.items():
