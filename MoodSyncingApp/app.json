@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "MoodSyncingApp",
+    "slug": "MoodSyncingApp",
+    "version": "1.0.0",
+    "sdkVersion": "50.0.0",
+    "platforms": ["ios", "android", "web"],
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+        }
+      ]
+    ],
+    "assetBundlePatterns": ["**/*"]
+  }
+}
