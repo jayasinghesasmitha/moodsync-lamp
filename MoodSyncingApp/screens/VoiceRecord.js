@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function VoiceRecorderScreen() {
+export default function VoiceRecord({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [recording, setRecording] = useState(null);
   const [recordingStatus, setRecordingStatus] = useState('');
@@ -26,9 +26,7 @@ export default function VoiceRecorderScreen() {
       });
 
       const newRecording = new Audio.Recording();
-      await newRecording.prepareToRecordAsync(
-        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-      );
+      await newRecording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
       await newRecording.startAsync();
 
       setRecording(newRecording);
@@ -67,10 +65,8 @@ export default function VoiceRecorderScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.recorderContainer}>
-        <Text style={styles.recordingText}>
-          {recordingStatus || 'Press start to record'}
-        </Text>
+      <View style={styles.cameraContainer}>
+        <Text style={styles.recordingText}>{recordingStatus || 'Press start to record'}</Text>
       </View>
 
       <TouchableOpacity style={styles.button} onPress={startRecording}>
@@ -82,6 +78,12 @@ export default function VoiceRecorderScreen() {
       <TouchableOpacity style={styles.button} onPress={stopRecording}>
         <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
           <Text style={styles.buttonText}>Hold</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Camera')}>
+        <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
+          <Text style={styles.buttonText}>Video</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     color: '#2e7d32',
     textAlign: 'center',
   },
-  recorderContainer: {
+  cameraContainer: {
     width: 300,
     height: 300,
     backgroundColor: '#000',
