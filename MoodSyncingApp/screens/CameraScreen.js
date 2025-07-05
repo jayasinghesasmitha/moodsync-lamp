@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function CameraScreen() {
+export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
 
@@ -42,21 +42,21 @@ export default function CameraScreen() {
         />
       </View>
 
-      <TouchableOpacity style={styles.button}>
-        <LinearGradient
-          colors={['#4dd0e1', '#4dd0e1']}
-          style={styles.buttonGradient}
-        >
+      <TouchableOpacity style={styles.button} onPress={takePicture}>
+        <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
           <Text style={styles.buttonText}>Start</Text>
         </LinearGradient>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button}>
-        <LinearGradient
-          colors={['#4dd0e1', '#4dd0e1']}
-          style={styles.buttonGradient}
-        >
+        <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
           <Text style={styles.buttonText}>Hold</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VoiceRecord')}>
+        <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
+          <Text style={styles.buttonText}>Voice</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
