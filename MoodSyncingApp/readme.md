@@ -45,3 +45,7 @@ npx expo install expo-linear-gradient
 npx expo start
 
 7.click w 
+
+8.Other libraries
+npx expo install expo-av
+npx expo install expo-media-library
