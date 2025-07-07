@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { loginWithEmail } from '../firebaseAuth';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    navigation.navigate('Camera');
+  const isValidEmail = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  const handleLogin = async () => {
+    if (!isValidEmail(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    const result = await loginWithEmail(email, password);
+    if (result.success) {
+      navigation.navigate('Camera');
+    } else {
+      alert(result.error);
+    }
   };
 
   return (
@@ -27,7 +42,7 @@ export default function LoginScreen({ navigation }) {
         ))}
       </View>
       <Text style={styles.title}>Login</Text>
-      
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -37,7 +52,7 @@ export default function LoginScreen({ navigation }) {
         autoCapitalize="none"
         placeholderTextColor="#78909c"
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -46,7 +61,7 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry
         placeholderTextColor="#78909c"
       />
-      
+
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <LinearGradient
           colors={['#4caf50', '#81c784']}
@@ -55,7 +70,7 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.buttonText}>Login</Text>
         </LinearGradient>
       </TouchableOpacity>
-      
+
       <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
         <Text style={styles.link}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
@@ -76,23 +91,21 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  wave: {
+  wavePattern: {
     position: 'absolute',
-    width: '100%',
-    height: 20,
-    backgroundColor: '#4caf50',
-    borderRadius: 10,
-    transform: [{ skewY: '5deg' }],
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: 'none', // ⬅️ This allows touches to pass through
   },
+
   title: {
     fontSize: 32,
     fontWeight: '600',
     marginBottom: 30,
     textAlign: 'center',
     color: '#2e7d32',
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
   input: {
     height: 50,
@@ -102,18 +115,11 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   button: {
     borderRadius: 12,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    marginTop: 10,
   },
   buttonGradient: {
     padding: 15,
