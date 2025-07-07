@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 import { LinearGradient } from 'expo-linear-gradient';
 import { signupWithEmail } from '../firebaseAuth';
 
+
 export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +25,7 @@ export default function SignupScreen({ navigation }) {
 
     const result = await signupWithEmail(email, password);
     if (result.success) {
-      navigation.navigate('Camera');
+      navigation.navigate('Login');
     } else {
       alert(result.error);
     }
