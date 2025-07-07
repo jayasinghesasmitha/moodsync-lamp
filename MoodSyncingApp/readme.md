@@ -49,3 +49,7 @@ npx expo start
 8.Other libraries
 npx expo install expo-av
 npx expo install expo-media-library
+
+9.To connect with the firebase(if it is not working under guven environment)
+npm uninstall firebase
+npm install firebase@8
