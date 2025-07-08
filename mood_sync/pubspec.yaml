@@ -1,0 +1,30 @@
+name: mood_sync
+description: A Flutter app for mood syncing with camera and voice features.
+version: 1.0.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^3.15.1
+  firebase_auth: ^5.6.2
+  firebase_database: ^11.3.9
+  camera: ^0.11.1
+  permission_handler: ^12.0.1
+  path_provider: ^2.1.2
+  path: ^1.8.0
+  just_audio: ^0.10.4
+  flutter_gradient_colors: ^2.1.1
+  cupertino_icons: ^1.0.6
+  record: ^6.0.0
+  js: ^0.6.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
