@@ -1,28 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
+import ProcessingSection from './ProcessingSection';
 
 export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
+  const [photo, setPhoto] = useState(null); // Store captured photo
+  const [isCapturing, setIsCapturing] = useState(false); // Control capture interval
+  const [isFrozen, setIsFrozen] = useState(false); // Control freeze/unfreeze
+  const intervalRef = useRef(null); // Store interval reference
 
   useEffect(() => {
+    // Request camera permissions
     (async () => {
+      console.log('CameraScreen: Requesting camera permissions');
       const { status } = await Camera.requestCameraPermissionsAsync();
+      console.log('CameraScreen: Permission status:', status);
       setHasPermission(status === 'granted');
     })();
-  }, []);
+
+    // Start/stop capturing images every 5 seconds
+    if (hasPermission && cameraRef && isCapturing && !isFrozen) {
+      console.log('CameraScreen: Starting auto-capture interval');
+      intervalRef.current = setInterval(() => {
+        takePicture();
+      }, 5000);
+    } else {
+      console.log('CameraScreen: Stopping auto-capture interval');
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+
+    // Cleanup interval on unmount or state change
+    return () => {
+      console.log('CameraScreen: Clearing auto-capture interval');
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [hasPermission, cameraRef, isCapturing, isFrozen]);
 
   const takePicture = async () => {
     if (cameraRef) {
-      let photo = await cameraRef.takePictureAsync();
-      console.log(photo);
+      console.log('CameraScreen: Taking picture');
+      let photoData = await cameraRef.takePictureAsync();
+      console.log('CameraScreen: Photo captured:', photoData.uri);
+      setPhoto(photoData); // Pass photo to ProcessingSection
+    } else {
+      console.log('CameraScreen: Camera ref not available');
     }
   };
 
   if (hasPermission === null) {
-    return <View style={styles.loadingContainer} />;
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.errorText}>Loading camera...</Text>
+      </View>
+    );
   }
 
   if (hasPermission === false) {
@@ -38,23 +75,37 @@ export default function CameraScreen({ navigation }) {
       <View style={styles.cameraContainer}>
         <Camera 
           style={styles.camera}
-          ref={ref => setCameraRef(ref)}
+          ref={ref => {
+            console.log('CameraScreen: Camera ref set:', !!ref);
+            setCameraRef(ref);
+          }}
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={takePicture}>
+      <ProcessingSection photo={photo} isFrozen={isFrozen} />
+
+      <TouchableOpacity style={styles.button} onPress={() => {
+        console.log('CameraScreen: Toggling capture state');
+        setIsCapturing(!isCapturing);
+      }}>
         <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
-          <Text style={styles.buttonText}>Start</Text>
+          <Text style={styles.buttonText}>{isCapturing ? 'Stop' : 'Start'}</Text>
         </LinearGradient>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => {
+        console.log('CameraScreen: Toggling freeze state');
+        setIsFrozen(!isFrozen);
+      }}>
         <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
-          <Text style={styles.buttonText}>Hold</Text>
+          <Text style={styles.buttonText}>{isFrozen ? 'Unfreeze' : 'Freeze'}</Text>
         </LinearGradient>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VoiceRecord')}>
+      <TouchableOpacity style={styles.button} onPress={() => {
+        console.log('CameraScreen: Navigating to VoiceRecord');
+        navigation.navigate('VoiceRecord');
+      }}>
         <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
           <Text style={styles.buttonText}>Voice</Text>
         </LinearGradient>
