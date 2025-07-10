@@ -1,4 +1,4 @@
-package com.moodsyncingapp
+package com.anonymous.MoodSyncingApp
 
 import android.os.Build
 import android.os.Bundle
