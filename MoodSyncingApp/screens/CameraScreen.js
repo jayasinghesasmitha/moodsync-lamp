@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
-import ProcessingSection from './ProcessingSection';
+import ProcessingSection from '../Sections/ProcessingSection';
 
 export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
