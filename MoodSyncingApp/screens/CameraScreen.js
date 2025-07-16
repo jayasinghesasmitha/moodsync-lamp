@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
-import ProcessingSection from '../Sections/ProcessingSection';
+import ProcessingSectionForCamera from '../Sections/ProcessingSectionForCamera';
 
 export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -48,7 +48,7 @@ export default function CameraScreen({ navigation }) {
       console.log('CameraScreen: Taking picture');
       let photoData = await cameraRef.takePictureAsync();
       console.log('CameraScreen: Photo captured:', photoData.uri);
-      setPhoto(photoData); // Pass photo to ProcessingSection
+      setPhoto(photoData); // Pass photo to ProcessingSectionForCamera
     } else {
       console.log('CameraScreen: Camera ref not available');
     }
@@ -82,7 +82,7 @@ export default function CameraScreen({ navigation }) {
         />
       </View>
 
-      <ProcessingSection photo={photo} isFrozen={isFrozen} />
+      <ProcessingSectionForCamera photo={photo} isFrozen={isFrozen} />
 
       <TouchableOpacity style={styles.button} onPress={() => {
         console.log('CameraScreen: Toggling capture state');
