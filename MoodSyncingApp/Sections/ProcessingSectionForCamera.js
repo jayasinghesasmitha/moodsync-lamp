@@ -48,7 +48,7 @@ const ProcessingSectionForCamera = ({ photo, isFrozen, onMoodDetected }) => {
       console.log('ProcessingSectionForCamera: Detected mood:', detectedMood);
       setMood(detectedMood);
 
-      // Map mood to intensity (0-255)
+      // Map mood to intensity (0-1.0 for ESP32)
       const intensity = mapMoodToIntensity(detectedMood);
       console.log('ProcessingSectionForCamera: Intensity:', intensity);
 
@@ -94,21 +94,21 @@ const ProcessingSectionForCamera = ({ photo, isFrozen, onMoodDetected }) => {
   };
 
   const mapMoodToIntensity = (mood) => {
-    // More nuanced intensity mapping for different moods
+    // Intensity mapping for ESP32 (0.0 to 1.0)
     const moodIntensities = {
-      happy: 255,
-      excited: 230,
-      surprised: 200,
-      neutral: 150,
-      confused: 120,
-      sleepy: 100,
-      sad: 80,
-      fearful: 60,
-      disgusted: 40,
-      angry: 30
+      happy: 1.0,
+      excited: 0.9,
+      surprised: 0.8,
+      neutral: 0.5,
+      confused: 0.4,
+      sleepy: 0.3,
+      sad: 0.25,
+      fearful: 0.2,
+      disgusted: 0.15,
+      angry: 0.1
     };
     
-    return moodIntensities[mood] || 128;
+    return moodIntensities[mood] || 0.5;
   };
 
   const getMoodColor = (mood) => {
