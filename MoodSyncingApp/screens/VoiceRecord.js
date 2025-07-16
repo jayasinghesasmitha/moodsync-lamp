@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Audio } from 'expo-av';
 import { LinearGradient } from 'expo-linear-gradient';
+import ProcessingSectionForVoice from '../Sections/ProcessingSectionForVoice';
 
 export default function VoiceRecord({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [recording, setRecording] = useState(null);
   const [recordingStatus, setRecordingStatus] = useState('');
+  const [recordedUri, setRecordedUri] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -31,6 +34,8 @@ export default function VoiceRecord({ navigation }) {
 
       setRecording(newRecording);
       setRecordingStatus('Recording...');
+      setRecordedUri(null);
+      setIsProcessing(false);
     } catch (err) {
       console.error('Failed to start recording', err);
     }
@@ -45,7 +50,9 @@ export default function VoiceRecord({ navigation }) {
       console.log('Recording saved to:', uri);
 
       setRecording(null);
-      setRecordingStatus('Recording saved');
+      setRecordingStatus('Processing...');
+      setRecordedUri(uri);
+      setIsProcessing(true);
     } catch (err) {
       console.error('Failed to stop recording', err);
     }
@@ -67,6 +74,13 @@ export default function VoiceRecord({ navigation }) {
     <View style={styles.container}>
       <View style={styles.cameraContainer}>
         <Text style={styles.recordingText}>{recordingStatus || 'Press start to record'}</Text>
+        {recordedUri && (
+          <ProcessingSectionForVoice 
+            audioUri={recordedUri} 
+            isProcessing={isProcessing}
+            onProcessingComplete={() => setIsProcessing(false)}
+          />
+        )}
       </View>
 
       <TouchableOpacity style={styles.button} onPress={startRecording}>
@@ -77,7 +91,7 @@ export default function VoiceRecord({ navigation }) {
 
       <TouchableOpacity style={styles.button} onPress={stopRecording}>
         <LinearGradient colors={['#4dd0e1', '#4dd0e1']} style={styles.buttonGradient}>
-          <Text style={styles.buttonText}>Hold</Text>
+          <Text style={styles.buttonText}>Stop</Text>
         </LinearGradient>
       </TouchableOpacity>
 
