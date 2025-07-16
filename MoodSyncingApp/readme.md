@@ -40,6 +40,7 @@ npx expo install @react-navigation/stack@^6.x
 npx expo install react-native-gesture-handler@~2.12.0
 npm install --save firebase@^10.11.0
 npx expo install expo-linear-gradient
+npm install expo-brightness
 
 6.run the project
 npx expo start
