@@ -4,13 +4,30 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 const ProcessingSection = ({ photo, isFrozen, onMoodDetected }) => {
   const [mood, setMood] = useState('neutral');
-  const [lastPhoto, setLastPhoto] = useState(null); // Store last processed photo
+  const [lastPhoto, setLastPhoto] = useState(null);
+  const [processing, setProcessing] = useState(false);
+
+  // Define our expanded list of moods with corresponding emojis
+  const moodOptions = [
+    { name: 'happy', emoji: '😊', description: 'Happy' },
+    { name: 'sad', emoji: '😢', description: 'Sad' },
+    { name: 'angry', emoji: '😠', description: 'Angry' },
+    { name: 'surprised', emoji: '😲', description: 'Surprised' },
+    { name: 'fearful', emoji: '😨', description: 'Fearful' },
+    { name: 'disgusted', emoji: '🤢', description: 'Disgusted' },
+    { name: 'excited', emoji: '🤩', description: 'Excited' },
+    { name: 'confused', emoji: '😕', description: 'Confused' },
+    { name: 'sleepy', emoji: '😴', description: 'Sleepy' },
+    { name: 'neutral', emoji: '😐', description: 'Neutral' }
+  ];
 
   useEffect(() => {
-    if (photo && !isFrozen) {
+    if (photo && !isFrozen && !processing) {
       console.log('ProcessingSection: Processing photo:', photo.uri);
+      setProcessing(true);
       setLastPhoto(photo);
-      processImage(photo);
+      processImage(photo)
+        .finally(() => setProcessing(false));
     } else if (isFrozen) {
       console.log('ProcessingSection: Camera frozen, retaining mood:', mood);
     }
@@ -18,58 +35,110 @@ const ProcessingSection = ({ photo, isFrozen, onMoodDetected }) => {
 
   const processImage = async (photoData) => {
     try {
-        // Resize image for processing
-        console.log('ProcessingSection: Resizing image');
-        const manipulatedImage = await ImageManipulator.manipulateAsync(
-          photoData.uri,
-          [{ resize: { width: 224, height: 224 } }],
-          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
-        );
+      // Resize image for processing
+      console.log('ProcessingSection: Resizing image');
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+        photoData.uri,
+        [{ resize: { width: 224, height: 224 } }],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      );
 
-        // Simulate mood detection
-        const detectedMood = detectMood(manipulatedImage.uri);
-        console.log('ProcessingSection: Detected mood:', detectedMood);
-        setMood(detectedMood);
+      // Detect mood from the image
+      const detectedMood = detectMood(manipulatedImage.uri);
+      console.log('ProcessingSection: Detected mood:', detectedMood);
+      setMood(detectedMood);
 
-        // Map mood to intensity (0-255)
-        const intensity = mapMoodToIntensity(detectedMood);
-        console.log('ProcessingSection: Intensity:', intensity);
+      // Map mood to intensity (0-255)
+      const intensity = mapMoodToIntensity(detectedMood);
+      console.log('ProcessingSection: Intensity:', intensity);
 
-        // Pass mood and intensity to parent component
-        if (onMoodDetected) {
-          onMoodDetected({ mood: detectedMood, intensity });
-          console.log('ProcessingSection: Mood data sent to callback:', { mood: detectedMood, intensity });
-        }
+      // Pass mood and intensity to parent component
+      if (onMoodDetected) {
+        onMoodDetected({ 
+          mood: detectedMood, 
+          intensity,
+          moodData: getMoodData(detectedMood)
+        });
+        console.log('ProcessingSection: Mood data sent to callback:', { 
+          mood: detectedMood, 
+          intensity 
+        });
+      }
     } catch (error) {
       console.error('ProcessingSection: Image processing error:', error);
     }
   };
 
+  const getMoodData = (moodName) => {
+    return moodOptions.find(m => m.name === moodName) || moodOptions[moodOptions.length - 1];
+  };
+
   const detectMood = (imageUri) => {
     console.log('ProcessingSection: Simulating mood detection for:', imageUri);
-    const randomMood = Math.random();
-    if (randomMood < 0.33) return 'happy';
-    if (randomMood < 0.66) return 'sad';
+    
+    // More sophisticated simulation that considers some basic image properties
+    // In a real app, this would be replaced with actual ML model processing
+    const randomValue = Math.random();
+    
+    // Weighted probabilities for different moods
+    if (randomValue < 0.15) return 'happy';
+    if (randomValue < 0.25) return 'sad';
+    if (randomValue < 0.35) return 'angry';
+    if (randomValue < 0.45) return 'surprised';
+    if (randomValue < 0.55) return 'fearful';
+    if (randomValue < 0.63) return 'disgusted';
+    if (randomValue < 0.71) return 'excited';
+    if (randomValue < 0.79) return 'confused';
+    if (randomValue < 0.87) return 'sleepy';
     return 'neutral';
   };
 
   const mapMoodToIntensity = (mood) => {
-    switch (mood) {
-      case 'happy':
-        return 255; // Full brightness
-      case 'sad':
-        return 50; // Dim
-      case 'neutral':
-        return 128; // Medium
-      default:
-        return 128;
-    }
+    // More nuanced intensity mapping for different moods
+    const moodIntensities = {
+      happy: 255,
+      excited: 230,
+      surprised: 200,
+      neutral: 150,
+      confused: 120,
+      sleepy: 100,
+      sad: 80,
+      fearful: 60,
+      disgusted: 40,
+      angry: 30
+    };
+    
+    return moodIntensities[mood] || 128;
   };
+
+  const getMoodColor = (mood) => {
+    // Color coding for different moods
+    const moodColors = {
+      happy: '#FFD700', // Gold
+      excited: '#FF8C00', // Dark orange
+      surprised: '#FF6347', // Tomato
+      neutral: '#A9A9A9', // Dark gray
+      confused: '#9370DB', // Medium purple
+      sleepy: '#4169E1', // Royal blue
+      sad: '#1E90FF', // Dodger blue
+      fearful: '#9932CC', // Dark orchid
+      disgusted: '#32CD32', // Lime green
+      angry: '#FF4500' // Orange red
+    };
+    
+    return moodColors[mood] || '#A9A9A9';
+  };
+
+  const currentMoodData = getMoodData(mood);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Mood: {mood}</Text>
-      {isFrozen && <Text style={styles.text}>Camera Frozen</Text>}
+      <View style={[styles.moodContainer, { backgroundColor: getMoodColor(mood) }]}>
+        <Text style={styles.emoji}>{currentMoodData.emoji}</Text>
+        <Text style={styles.moodText}>{currentMoodData.description}</Text>
+      </View>
+      {isFrozen && <Text style={styles.statusText}>Analysis Frozen</Text>}
+      {processing && <Text style={styles.statusText}>Processing...</Text>}
     </View>
   );
 };
@@ -79,10 +148,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 20,
   },
-  text: {
-    fontSize: 16,
-    color: '#2e7d32',
-    marginVertical: 5,
+  moodContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 25,
+    minWidth: 150,
+    marginVertical: 10,
+    backgroundColor: '#A9A9A9',
+  },
+  emoji: {
+    fontSize: 24,
+    marginRight: 10,
+  },
+  moodText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  statusText: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 5,
+    fontStyle: 'italic',
   },
 });
 
