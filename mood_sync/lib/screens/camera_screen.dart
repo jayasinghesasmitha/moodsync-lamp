@@ -41,7 +41,7 @@ class _CameraScreenState extends State<CameraScreen> {
       final cameras = await availableCameras();
       if (cameras.isEmpty) {
         setState(() {
-          _hasPermission = false; // Treat as no access if no cameras are found
+          _hasPermission = false;
         });
         return;
       }
@@ -95,13 +95,23 @@ class _CameraScreenState extends State<CameraScreen> {
     if (!_hasPermission || _controller == null) {
       return Container(
         color: const Color(0xFFe0f7fa),
-        child: const Center(
-          child: Text(
-            'No access to camera',
-            style: TextStyle(
-              fontSize: 20,
-              color: Color(0xFF2e7d32),
-            ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'No access to camera',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF2e7d32),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _requestCameraPermission,
+                child: const Text('Request Permission'),
+              ),
+            ],
           ),
         ),
       );
@@ -116,9 +126,20 @@ class _CameraScreenState extends State<CameraScreen> {
       );
     }
 
-    return Container(
-      color: const Color(0xFFf9fafa),
-      child: Column(
+    return Scaffold(
+      backgroundColor: const Color(0xFFf9fafa),
+      appBar: AppBar(
+        title: const Text('Camera'),
+        actions: [
+          if (!_hasPermission)
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => openAppSettings(),
+              tooltip: 'Open settings to grant permission',
+            ),
+        ],
+      ),
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
@@ -165,7 +186,6 @@ class _CameraScreenState extends State<CameraScreen> {
           const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
-              // Placeholder for "Hold" functionality
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Hold functionality not implemented')),
               );
