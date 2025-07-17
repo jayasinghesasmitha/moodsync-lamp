@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mood_sync/firebase_config.dart';
+import 'package:mood_sync/firebase/firebase_config.dart';
+import 'package:mood_sync/screens/camera_screen.dart';
 import 'package:mood_sync/screens/home_screen.dart';
 import 'package:mood_sync/screens/login_screen.dart';
 import 'package:mood_sync/screens/signup_screen.dart';
-import 'package:mood_sync/screens/camera_screen.dart';
 import 'package:mood_sync/screens/voice_record_screen.dart';
 
 void main() async {
@@ -22,6 +22,7 @@ class MoodSyncApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
         useMaterial3: true,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       initialRoute: '/home',
       routes: {
