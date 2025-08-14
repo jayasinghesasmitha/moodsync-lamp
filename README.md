@@ -38,7 +38,7 @@ This concept is inspired by research on how lighting affects psychological state
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/mood-lighting-iot.git
+   git clone https://github.com/jayasinghesasmitha/moodsync-lamp.git
    ```
 2. Set up Firebase and configure credentials.
 3. Run the Node.js app to start mood detection.
