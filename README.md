@@ -47,11 +47,8 @@ This concept is inspired by research on how lighting affects psychological state
 
 ## 📖 References
 
-- [PMC Study on Light and Mood](https://pmc.ncbi.nlm.nih.gov/articles/PMC7445808/) *(link provided, content unavailable)*
+- [PMC Study on Light and Mood](https://pmc.ncbi.nlm.nih.gov/articles/PMC7445808/) 
 - [How Light Affects Mental Health – The Conversation](https://theconversation.com/how-light-can-shift-your-mood-and-mental-health-231282)
 - [Lighting and Mood – Illuminated Integration](https://illuminated-integration.com/blog/how-lighting-affects-mood/)
 
 
----
-
-Would you like help adding setup screenshots, demo videos, or a license section next?
